@@ -5,7 +5,7 @@ from mandrel import config
 from mandrel import exception
 from mandrel import util
 
-__BOOTSTRAP_BASENAME = 'Mandrel.py'
+__BOOTSTRAP_BASENAME = os.getenv('MANDREL_BOOTSTRAP_NAME', 'Mandrel.py')
 
 LOGGING_CONFIG_BASENAME = 'logging.cfg'
 DEFAULT_LOGGING_LEVEL = logging.INFO
@@ -105,12 +105,16 @@ def get_logger(name=None):
 
 
 def _find_bootstrap_base():
-    current = os.path.realpath('.')
-    while not os.path.isfile(os.path.join(current, __BOOTSTRAP_BASENAME)):
-        parent = os.path.dirname(current)
-        if parent == current:
-            raise exception.MissingBootstrapException, 'Cannot find %s file in directory hierarchy' % __BOOTSTRAP_BASENAME
-        current = parent
+    if os.getenv('MANDREL_ROOT'):
+        current = os.getenv('MANDREL_ROOT')
+    else:
+        current = os.path.realpath('.')
+
+        while not os.path.isfile(os.path.join(current, __BOOTSTRAP_BASENAME)):
+            parent = os.path.dirname(current)
+            if parent == current:
+                raise exception.MissingBootstrapException, 'Cannot find %s file in directory hierarchy' % __BOOTSTRAP_BASENAME
+            current = parent
 
     return current, os.path.join(current, __BOOTSTRAP_BASENAME)
 
@@ -129,9 +133,10 @@ def parse_bootstrap_file():
     This makes it easy for the BOOTSTRAP_FILE to configure mandrel settings
     without performing further imports.
     """
-    with open(BOOTSTRAP_FILE, 'rU') as source:
-        code = compile(source.read(), BOOTSTRAP_FILE, 'exec')
-        eval(code, {'bootstrap': sys.modules[__name__], 'config': config})
+    if os.path.exists(BOOTSTRAP_FILE):
+        with open(BOOTSTRAP_FILE, 'rU') as source:
+            code = compile(source.read(), BOOTSTRAP_FILE, 'exec')
+            eval(code, {'bootstrap': sys.modules[__name__], 'config': config})
 
 (ROOT_PATH, BOOTSTRAP_FILE) = _find_bootstrap_base()
 SEARCH_PATHS = util.TransformingList(normalize_path)

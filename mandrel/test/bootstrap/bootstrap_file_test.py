@@ -3,6 +3,7 @@ import os
 import unittest
 import mandrel.exception
 from mandrel.test import utils
+from test.test_support import EnvironmentVarGuard
 
 class TestBootstrapFile(utils.TestCase):
     def testNoFile(self):
@@ -43,3 +44,12 @@ class TestBootstrapFile(utils.TestCase):
             utils.refresh_bootstrapper()
             self.assertEqual('logging.cfg', mandrel.bootstrap.LOGGING_CONFIG_BASENAME)
 
+    def testOSEnv(self):
+        with EnvironmentVarGuard() as env:
+            env.set('MANDREL_ROOT', '/blah')
+            env.set('MANDREL_BOOTSTRAP_NAME', 'bootstrapper.py')
+
+            utils.refresh_bootstrapper()
+            self.assertEqual(env.get('MANDREL_ROOT'), mandrel.bootstrap.ROOT_PATH)
+            expected = os.path.join(env.get('MANDREL_ROOT'), env.get('MANDREL_BOOTSTRAP_NAME'))
+            self.assertEqual(expected, mandrel.bootstrap.BOOTSTRAP_FILE)

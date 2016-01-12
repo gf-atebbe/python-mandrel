@@ -1,4 +1,9 @@
-2.0.0
+0.2.1
+
+* Issue #8: Allow mandrel root to be specified via an environment variable
+* Issue #13: Allow bootstrap basename to be specified via an environment variable
+
+0.2.0
 
 * mandrel-runner uses return value of callable as the exit code.
 
