@@ -50,6 +50,6 @@ class TestBootstrapFile(utils.TestCase):
             env.set('MANDREL_BOOTSTRAP_NAME', 'bootstrapper.py')
 
             utils.refresh_bootstrapper()
-            self.assertEqual(env.get('MANDREL_ROOT'), mandrel.bootstrap.ROOT_PATH)
-            expected = os.path.join(env.get('MANDREL_ROOT'), env.get('MANDREL_BOOTSTRAP_NAME'))
+            self.assertEqual(os.getenv('MANDREL_ROOT'), mandrel.bootstrap.ROOT_PATH)
+            expected = os.path.join(os.getenv('MANDREL_ROOT'), os.getenv('MANDREL_BOOTSTRAP_NAME'))
             self.assertEqual(expected, mandrel.bootstrap.BOOTSTRAP_FILE)
