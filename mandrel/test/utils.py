@@ -48,12 +48,23 @@ def refresh_bootstrapper():
     else:
         __import__('mandrel.bootstrap')
 
-BOOTSTRAP_FILE = 'Mandrel.py'
+
 @contextlib.contextmanager
 def bootstrap_scenario(text="", dir=None):
+    BOOTSTRAP_FILE = os.getenv('MANDREL_BOOTSTRAP_NAME', 'Mandrel.py')
     with workdir(dir=dir) as path:
         bootstrapper = os.path.join(path, BOOTSTRAP_FILE)
         with open(bootstrapper, 'w') as f:
             f.write(text)
         yield path, bootstrapper
 
+@contextlib.contextmanager
+def nested_bootstrap_scenario(text="", dir=None):
+    BOOTSTRAP_FILE = os.getenv('MANDREL_BOOTSTRAP_NAME', 'Mandrel.py')
+    with workdir(dir=dir) as path0:
+        with workdir(dir=path0) as path1:
+            with workdir(dir=path1) as path2:
+                bootstrapper = os.path.join(path0, BOOTSTRAP_FILE)
+                with open(bootstrapper, 'w') as f:
+                    f.write(text)
+                yield path0, bootstrapper

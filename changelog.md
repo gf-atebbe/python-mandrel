@@ -1,4 +1,4 @@
-0.2.1
+TBD
 
 * Issue #8: Allow mandrel root to be specified via an environment variable
 * Issue #13: Allow bootstrap basename to be specified via an environment variable

@@ -75,6 +75,19 @@ You can fetch a logger named "storage" from it, too:
 
     logger = StorageConfig.get_logger()
 
+### Bootstrap Configuration ###
+
+By default, mandrel looks for a bootstrap file named 'Mandrel.py' in the search path, as described above.
+In most cases this works well and the default behaviour is exactly what you need.
+There are rare exceptions though where you don't want Mandrel to throw an exception if the
+bootstrap file isn't found or don't want to the default search path to be the current working directory.
+
+Mandrel supports two environment variables for these specific cases:
+`MANDREL_ROOT = The root directory from which to start looking for the bootstrap file`
+`MANDREL_BOOTSTRAP_NAME = The name of the bootstrap file to look for in the search path`
+
+These environment variables can be set independently of each other and do not have to both be set.
+
 # License #
 
 Mandrel is free software and is released under the terms
